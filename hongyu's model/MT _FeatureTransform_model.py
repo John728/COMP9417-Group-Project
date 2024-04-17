@@ -74,6 +74,7 @@ for epoch in range(200):
 
 model.eval()
 accuracies = []
+cross_entropy_losses = []
 
 with torch.no_grad():
     y_preds_train = model(X_train_tensor)
@@ -82,5 +83,10 @@ with torch.no_grad():
         accuracies.append(accuracy)
         print(f'Task {i+1} Accuracy: {accuracy:.4f}')
     
+        y_true_i = y_train_tensors[i].view(-1, 1)
+        task_loss = criterion(y_pred_i, y_true_i)
+        cross_entropy_losses.append(task_loss.item())
+        print(f'Task {i+1} Cross-Entropy Loss: {task_loss.item()}')
+
 average_accuracy = sum(accuracies) / len(accuracies)
 print(f'Average Accuracy: {average_accuracy:.4f}')
