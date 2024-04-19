@@ -3,11 +3,6 @@ import torch.nn as nn
 import torch.optim as optim
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import KFold
-from sklearn.model_selection import KFold
-
-k_folds = 10
-kf = KFold(n_splits=k_folds, shuffle=True, random_state=42)
 
 def binary_accuracy(output, target):
     with torch.no_grad():
@@ -50,12 +45,15 @@ model = MultiTaskNN(input_size, hidden_size, task_output_sizes)
 criterion = nn.BCEWithLogitsLoss()
 X_train_normalized = np.load('X_train_normalized.npy')
 y_train = np.load('y_train.npy')
-
 X_train_tensor = torch.tensor(X_train_normalized, dtype=torch.float32)
 y_train_tensors = [torch.tensor(y_train[:, i], dtype=torch.float32) for i in range(y_train.shape[1])]
 
-optimizer = optim.Adam(model.parameters(), lr=0.001)
+optimizer = optim.Adam([
+    {'params': model.shared_layer.parameters()},
+    {'params': model.task_layers.parameters()}
+], lr=0.001)
 reg_strength = 0.0001
+
 for epoch in range(200):
     optimizer.zero_grad()
     y_preds = model(X_train_tensor)
@@ -75,7 +73,6 @@ for epoch in range(200):
 model.eval()
 accuracies = []
 cross_entropy_losses = []
-
 with torch.no_grad():
     y_preds_train = model(X_train_tensor)
     for i, y_pred_i in enumerate(y_preds_train):
@@ -90,3 +87,23 @@ with torch.no_grad():
 
 average_accuracy = sum(accuracies) / len(accuracies)
 print(f'Average Accuracy: {average_accuracy:.4f}')
+
+
+
+X_test_normalized = np.load('X_test_normalized.npy')
+X_test_tensor = torch.tensor(X_test_normalized, dtype=torch.float32)
+model.eval() 
+with torch.no_grad():
+    y_preds_test = model(X_test_tensor)
+
+binary_outputs = [torch.sigmoid(y_pred).numpy() > 0.5 for y_pred in y_preds_test]
+
+test_outputs_df = pd.DataFrame({
+    f'Task {i+1} Predictions': output.astype(int).flatten()
+    for i, output in enumerate(binary_outputs)
+})
+
+excel_path = 'y_test.csv'
+test_outputs_df.to_csv(excel_path, index=False, header = False)
+
+print(f'Predictions saved to {excel_path}')

@@ -56,7 +56,7 @@ y_train = np.load('y_train.npy')
 X_train_tensor = torch.tensor(X_train_normalized, dtype=torch.float32)
 y_train_tensors = [torch.tensor(y_train[:, i], dtype=torch.float32) for i in range(y_train.shape[1])]
 
-reg_strengths = [0, 0.00001, 0.0001, 0.001, 0.01, 0.1]
+reg_strengths = [0.005, 0.006, 0.007, 0.008, 0.009, 0.01]
 scores = {reg: [] for reg in reg_strengths} 
 for reg_strength in reg_strengths:
     for train_idx, val_idx in kf.split(X_train_normalized):
