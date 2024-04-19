@@ -9,9 +9,9 @@ import matplotlib.pyplot as plt
 # --------------------------------------------------
 
 
-X_train = np.load('X_train.npy')
-X_test = np.load('X_test.npy')
-y_train = np.load('y_train.npy')
+X_train = np.load('./X_train.npy')
+X_test = np.load('./X_test.npy')
+y_train = np.load('./y_train.npy')
 y_train_df = pd.DataFrame(y_train)
 
 
@@ -145,8 +145,8 @@ df_cleaned_train = df_cleaned_train.to_numpy()
 df_cleaned_test = df_cleaned_test.to_numpy()
 
 # Save the cleaned data to a npy file
-np.save('X_train_cleaned.npy', df_cleaned_train)
-np.save('X_test_cleaned.npy', df_cleaned_test)
+np.save('../model/X_train_cleaned.npy', df_cleaned_train)
+np.save('../model/X_test_cleaned.npy', df_cleaned_test)
 
 
 # --------------------------------------------------
@@ -156,8 +156,8 @@ np.save('X_test_cleaned.npy', df_cleaned_test)
 import pandas as pd
 import numpy as np
 
-X_train = np.load('X_train_cleaned.npy')
-X_test = np.load('X_test_cleaned.npy')
+X_train = np.load('../model/X_train_cleaned.npy')
+X_test = np.load('../model/X_test_cleaned.npy')
 df_xtrain = pd.DataFrame(X_train)
 df_xtest = pd.DataFrame(X_test)
 
@@ -166,8 +166,8 @@ df_xtest = df_xtest.fillna(df_xtest.mean())
 X_train_filled = df_xtrain.to_numpy()
 X_test_filled = df_xtest.to_numpy()
 
-np.save('X_train_filled.npy', X_train_filled)
-np.save('X_test_filled.npy', X_test_filled)
+np.save('../model/X_train_filled.npy', X_train_filled)
+np.save('../model/X_test_filled.npy', X_test_filled)
 
 
 # --------------------------------------------------
@@ -178,15 +178,15 @@ np.save('X_test_filled.npy', X_test_filled)
 import pandas as pd
 import numpy as np
 
-X_train = np.load('X_train_filled.npy')
-X_test = np.load('X_test_filled.npy')
+X_train = np.load('../model/X_train_filled.npy')
+X_test = np.load('../model/X_test_filled.npy')
 
 for i in range(X_train.shape[1]):
     X_train[:, i] = (X_train[:, i] - np.min(X_train[:, i])) / (np.max(X_train[:, i]) - np.min(X_train[:, i]))
     X_test[:, i] = (X_test[:, i] - np.min(X_test[:, i])) / (np.max(X_test[:, i]) - np.min(X_test[:, i]))
 
-np.save('../X_train_normalized.npy', X_train)
-np.save('../X_test_normalized.npy', X_test)
+np.save('../model/X_train_normalized.npy', X_train)
+np.save('../model/X_test_normalized.npy', X_test)
 
 
 
@@ -195,8 +195,8 @@ np.save('../X_test_normalized.npy', X_test)
 # --------------------------------------------------
 
 
-X_train = np.load('X_train_normalized.npy')
-X_test = np.load('X_test_normalized.npy')
+X_train = np.load('../model/X_train_normalized.npy')
+X_test = np.load('../model/X_test_normalized.npy')
 y_train = np.load('y_train.npy')
 
 df_features = pd.DataFrame(X_train)
